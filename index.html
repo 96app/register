@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Your Business</title>
+    <link rel="icon" type="image/x-icon" href="icon.png">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #0d1117;
+            color: rgb(92, 91, 91);
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow-y: auto;
+            padding-top: 30px;
+        }
+        .container {
+            max-width: 500px;
+            padding: 20px;
+            background: #eeeeee;
+            border-radius: 12px;
+            box-shadow: 0px 4px 20px rgba(255, 255, 255, 0.1);
+            opacity: 0;
+            transform: scale(0.9);
+            animation: fadeInScale 0.8s forwards;
+        }
+
+        .container p {
+            padding-top: 20px;
+        }
+        @keyframes fadeInScale {
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            animation: fadeOut 1.5s forwards 2s;
+        }
+        .loading-screen img {
+            width: 300px;
+            height: auto;
+            display: block;
+            margin: auto;
+        }
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+                visibility: hidden;
+            }
+        }
+        input, textarea {
+            background: #21262d;
+            border: none;
+            color: rgb(0, 0, 0);
+        }
+        input:focus, textarea:focus {
+            outline: none;
+            border: 2px solid #58a6ff;
+        }
+        .form-control::placeholder {
+            color: #8b949e;
+        }
+        .btn-custom {
+            background: linear-gradient(135deg, #58a6ff, #1f6feb);
+            border: none;
+            padding: 10px;
+            border-radius: 6px;
+            color: white;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+        .btn-custom:hover {
+            background: linear-gradient(135deg, #1f6feb, #58a6ff);
+        }
+        .header-container {
+            position: absolute;
+            top: 10px;  /* Adjust distance from the top */
+            right: 10px; /* Adjust distance from the right */
+            display: flex;
+            align-items: center;
+            gap: 10px; /* Space between text and images */
+        }
+
+/* Style for the header text */
+.header-text {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #e2e2e2;
+}
+
+/* Styling for images */
+.header-images {
+    position: relative;
+    width: 60px; /* Adjust as needed */
+    height: 60px;
+    display: flex;
+}
+
+/* Position the images */
+.header-images img {
+    width: 40px; /* Adjust image size */
+    height: 40px;
+    position: absolute;
+}
+
+.header-images img:nth-child(2) {
+    top: 7px;
+    left: 0;
+}
+
+.header-images img:nth-child(1) {
+    top: 7px;
+    left: 20px; /* Slight overlap effect */
+}
+        footer {
+            text-align: center;
+            padding: 10px;
+            background: #161b22;
+            width: 100%;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="loading-screen">
+        <img src="search-01.png" alt="Loading Logo">
+    </div>
+
+    <div class="header-container">
+        <div class="header-text">Add your business</div>
+        <div class="header-images">
+            <img src="Atc01.png" alt="Top Image">
+            <img src="Atc02.png" alt="Bottom Image">
+        </div>
+    </div>
+
+    <div class="container mt-5 mb-5">
+        <form id="addBusinessForm" action="https://formsubmit.co/c40e7b48e88f8c4a77b332410fe21c5c" method="POST">
+            <label for="businessName">Business Name*</label>
+            <input class="form-control mb-2" type="text" id="businessName" name="businessName" required placeholder="Enter business name">
+            
+            <label for="businessRegNo">Business Registration Number</label>
+            <input class="form-control mb-2" type="text" id="businessRegNo" name="businessRegNo" placeholder="Optional">
+            
+            <label for="businessDescription">Business Description*</label>
+            <textarea class="form-control mb-2" id="businessDescription" name="businessDescription" required placeholder="Describe your business"></textarea>
+            
+            <label for="phone">Phone*</label>
+            <input class="form-control mb-2" type="tel" id="phone" name="phone" required placeholder="Enter phone number">
+            
+            <label for="email">Email Address*</label>
+            <input class="form-control mb-2" type="email" id="email" name="email" required placeholder="Enter email address">
+            
+            <label for="town">Town*</label>
+            <input class="form-control mb-2" type="text" id="town" name="town" required placeholder="Enter town">
+            
+            <label for="area">Area*</label>
+            <input class="form-control mb-2" type="text" id="area" name="area" required placeholder="Enter area">
+            
+            <label for="businessLogo">Business Logo*</label>
+            <input class="form-control mb-2" type="file" id="businessLogo" name="businessLogo" accept="image/png, image/jpg, image/jpeg" required>
+            
+            <label for="googleMapScreenshot">Google Maps Location Screenshot*</label>
+            <input class="form-control mb-3" type="file" id="googleMapScreenshot" name="googleMapScreenshot" accept="image/png, image/jpg, image/jpeg, application/pdf" required>
+            
+            <button class="btn btn-custom w-100" type="button" id="uploadButton">Upload Images</button>
+            <button class="btn btn-success w-100 mt-2" type="submit" id="submitFormButton" style="display:none;">Submit Form</button>
+        </form>
+        <p>Note: This application can take up to 48 hours for your business to be successfully registered. If we find your information not matching, your registration may not be successful.</p>
+
+    </div>
+
+    <footer>
+        &copy; 2025 Search business. All rights reserved.
+    </footer>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            setTimeout(() => {
+                document.querySelector(".loading-screen").style.display = "none";
+            }, 2000);
+        });
+    </script>
+
+<script>
+    document.getElementById('uploadButton').addEventListener('click', function(event) {
+        event.preventDefault();  // Prevent the default form submission
+    
+        var fileInput1 = document.getElementById('businessLogo');
+        var fileInput2 = document.getElementById('googleMapScreenshot');
+    
+        // Check if both files are selected
+        if (fileInput1.files.length === 0 || fileInput2.files.length === 0) {
+            alert('Please upload both images.');
+            return;
+        }
+    
+        // FormData for the first image (business logo)
+        var formData1 = new FormData();
+        formData1.append('image', fileInput1.files[0]);
+    
+        // FormData for the second image (Google Map Screenshot)
+        var formData2 = new FormData();
+        formData2.append('image', fileInput2.files[0]);
+    
+        var apiKey = 'e6ca4afe06b2ef4374626035b46bd315';  // Replace with your ImgBB API Key
+    
+        // Upload the first image (business logo) to ImgBB
+        fetch(`https://api.imgbb.com/1/upload?key=${apiKey}`, {
+            method: 'POST',
+            body: formData1,
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                var image1Url = data.data.url; // for business logo
+    
+                // Upload the second image (Google Map screenshot) to ImgBB
+                fetch(`https://api.imgbb.com/1/upload?key=${apiKey}`, {
+                    method: 'POST',
+                    body: formData2,
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        var image2Url = data.data.url; // for Google Maps screenshot
+    
+                        // Store the image URLs in hidden fields or form data
+                        var form = document.getElementById('addBusinessForm');
+                        var businessLogoUrlInput = document.createElement('input');
+                        businessLogoUrlInput.type = 'hidden';
+                        businessLogoUrlInput.name = 'businessLogoUrl';
+                        businessLogoUrlInput.value = image1Url;
+                        form.appendChild(businessLogoUrlInput);
+    
+                        var googleMapScreenshotUrlInput = document.createElement('input');
+                        googleMapScreenshotUrlInput.type = 'hidden';
+                        googleMapScreenshotUrlInput.name = 'googleMapScreenshotUrl';
+                        googleMapScreenshotUrlInput.value = image2Url;
+                        form.appendChild(googleMapScreenshotUrlInput);
+    
+                        // Now trigger the form submission
+                        document.getElementById('submitFormButton').click();
+                    } else {
+                        console.error('Google Maps screenshot upload failed:', data);
+                        alert('Google Maps screenshot upload failed. Please try again.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error uploading Google Map screenshot:', error);
+                    alert('Error uploading Google Map screenshot.');
+                });
+    
+            } else {
+                console.error('Business logo upload failed:', data);
+                alert('Business logo upload failed. Please try again.');
+            }
+        })
+        .catch(error => {
+            console.error('Error uploading business logo:', error);
+            alert('Error uploading business logo.');
+        });
+    });
+    </script>
+</body>
+</html>
