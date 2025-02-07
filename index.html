@@ -210,79 +210,61 @@
     
         var fileInput1 = document.getElementById('businessLogo');
         var fileInput2 = document.getElementById('googleMapScreenshot');
-    
-        // Check if both files are selected
-        if (fileInput1.files.length === 0 || fileInput2.files.length === 0) {
-            alert('Please upload both images.');
-            return;
-        }
-    
-        // FormData for the first image (business logo)
-        var formData1 = new FormData();
-        formData1.append('image', fileInput1.files[0]);
-    
-        // FormData for the second image (Google Map Screenshot)
-        var formData2 = new FormData();
-        formData2.append('image', fileInput2.files[0]);
-    
+        var form = document.getElementById('addBusinessForm');
+
         var apiKey = 'e6ca4afe06b2ef4374626035b46bd315';  // Replace with your ImgBB API Key
-    
-        // Upload the first image (business logo) to ImgBB
-        fetch(`https://api.imgbb.com/1/upload?key=${apiKey}`, {
-            method: 'POST',
-            body: formData1,
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                var image1Url = data.data.url; // for business logo
-    
-                // Upload the second image (Google Map screenshot) to ImgBB
-                fetch(`https://api.imgbb.com/1/upload?key=${apiKey}`, {
-                    method: 'POST',
-                    body: formData2,
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        var image2Url = data.data.url; // for Google Maps screenshot
-    
-                        // Store the image URLs in hidden fields or form data
-                        var form = document.getElementById('addBusinessForm');
-                        var businessLogoUrlInput = document.createElement('input');
-                        businessLogoUrlInput.type = 'hidden';
-                        businessLogoUrlInput.name = 'businessLogoUrl';
-                        businessLogoUrlInput.value = image1Url;
-                        form.appendChild(businessLogoUrlInput);
-    
-                        var googleMapScreenshotUrlInput = document.createElement('input');
-                        googleMapScreenshotUrlInput.type = 'hidden';
-                        googleMapScreenshotUrlInput.name = 'googleMapScreenshotUrl';
-                        googleMapScreenshotUrlInput.value = image2Url;
-                        form.appendChild(googleMapScreenshotUrlInput);
-    
-                        // Now trigger the form submission
-                        document.getElementById('submitFormButton').click();
-                    } else {
-                        console.error('Google Maps screenshot upload failed:', data);
-                        alert('Google Maps screenshot upload failed. Please try again.');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error uploading Google Map screenshot:', error);
-                    alert('Error uploading Google Map screenshot.');
-                });
-    
-            } else {
-                console.error('Business logo upload failed:', data);
-                alert('Business logo upload failed. Please try again.');
-            }
-        })
-        .catch(error => {
-            console.error('Error uploading business logo:', error);
-            alert('Error uploading business logo.');
-        });
+
+        var uploadImage = (file) => {
+            var formData = new FormData();
+            formData.append('image', file);
+            return fetch(`https://api.imgbb.com/1/upload?key=${apiKey}`, {
+                method: 'POST',
+                body: formData,
+            }).then(response => response.json());
+        };
+
+        var uploadPromises = [];
+
+        // If an image is selected, upload it
+        if (fileInput1.files.length > 0) {
+            uploadPromises.push(uploadImage(fileInput1.files[0]).then(data => {
+                if (data.success) {
+                    var businessLogoUrlInput = document.createElement('input');
+                    businessLogoUrlInput.type = 'hidden';
+                    businessLogoUrlInput.name = 'businessLogoUrl';
+                    businessLogoUrlInput.value = data.data.url;
+                    form.appendChild(businessLogoUrlInput);
+                }
+            }));
+        }
+
+        if (fileInput2.files.length > 0) {
+            uploadPromises.push(uploadImage(fileInput2.files[0]).then(data => {
+                if (data.success) {
+                    var googleMapScreenshotUrlInput = document.createElement('input');
+                    googleMapScreenshotUrlInput.type = 'hidden';
+                    googleMapScreenshotUrlInput.name = 'googleMapScreenshotUrl';
+                    googleMapScreenshotUrlInput.value = data.data.url;
+                    form.appendChild(googleMapScreenshotUrlInput);
+                }
+            }));
+        }
+
+        // If no images are uploaded, submit the form immediately
+        if (uploadPromises.length === 0) {
+            form.submit();
+        } else {
+            // Wait for all image uploads before submitting
+            Promise.all(uploadPromises).then(() => {
+                form.submit();
+            }).catch(error => {
+                console.error('Image upload error:', error);
+                alert('Error uploading images. The form will be submitted without images.');
+                form.submit(); // Submit the form even if image uploads fail
+            });
+        }
     });
-    </script>
+</script>
+
 </body>
 </html>
