@@ -1,0 +1,104 @@
+/* General Styles */
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f9f9f9;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    height: 100vh;
+}
+
+/* Profile Container */
+.profile-container {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.15);
+    padding: 40px;
+    width: 100%;
+    max-width: 700px;
+    margin-top: 40px;
+}
+
+/* Profile Header */
+h1 {
+    font-size: 2.5rem;
+    color: #333;
+    text-align: center;
+    font-weight: 600;
+    margin-bottom: 30px;
+}
+
+/* Profile Info */
+.profile-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.logo-img {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+/* Profile Details */
+.profile-details p {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+}
+
+.profile-details strong {
+    font-weight: 600;
+}
+
+/* Action Buttons */
+.action-buttons {
+    display: flex;
+    justify-content: space-evenly;
+    margin-top: 30px;
+    width: 100%;
+}
+
+/* Edit, Refresh, Delete Buttons */
+button {
+    font-size: 1.1rem;
+    padding: 12px 25px;
+    border-radius: 50px;
+    border: none;
+    cursor: pointer;
+    width: 30%;
+}
+
+.edit-btn {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.edit-btn:hover {
+    background-color: #388E3C;
+}
+
+.refresh-btn {
+    background-color: #FF9800;
+    color: white;
+}
+
+.refresh-btn:hover {
+    background-color: #F57C00;
+}
+
+.delete-btn {
+    background-color: #F44336;
+    color: white;
+}
+
+.delete-btn:hover {
+    background-color: #D32F2F;
+}
+
+
+

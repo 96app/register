@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profile Page</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="login.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cloudinary-core/2.11.4/cloudinary-core-shrinkwrap.min.js"></script>
+</head>
+<body>
+
+<!-- Premium Upgrade Popup -->
+<div id="premiumUpgradePopup" class="popup" style="display: none;">
+  <div class="popup-content">
+    <div class="popup-header" style="background-image: url('/upgrade-image.jpg');">
+      <h2>Upgrade to Premium</h2>
+    </div>
+    <div class="popup-body">
+      <p>You need to upgrade to Premium feature to upload your Profile logo.</p>
+      <p>A premium feature profile will have custom logo and verified badge.</p>
+      <p class="price">R99 <span>once-off</span></p>
+      <ul class="features">
+        <li>Get Custom logo</li>
+        <li>Get Verified badge (Registered business)</li>
+      </ul>
+      <button id="upgradeNowButton" class="upgrade-button">Upgrade now</button>
+    </div>
+  </div>
+</div>
+
+
+  <!-- Admin Notification -->
+<div id="adminNotification" style="display: none;">
+  <p>You are logged in as an admin.</p>
+</div>
+
+<!-- Admin Panel -->
+<div class="admin-panel" id="adminPanel">
+  <h2>Admin Panel</h2>
+  <button id="togglePendingProfiles">Pending Profiles</button>
+  <button id="toggleUpgradeRequests">Upgrade Requests</button>
+  <div id="pendingProfilesList" class="pending-profiles-list"></div>
+  <div id="upgradeRequestsList" class="upgrade-requests-list" style="display: none;"></div>
+</div>
+
+<!-- Button to Toggle Admin Panel (Visible Only to Admins) -->
+<button id="adminPanelButton">Admin Panel</button>
+
+  <!-- Login Modal -->
+  <div hidden id="loginModal" class="d-flex show">
+    <div class="modal-content">
+      <div class="logo">
+        <img src="/search-01.png" alt="Logo" class="mb-3">
+      </div>
+      <button class="google-btn" id="signInButton">
+        <img src="./google.png" alt="Google Icon" style="width: 18px; margin-right: 12px;">
+        <span>Login with Google</span>
+      </button>
+    </div>
+  </div>
+
+<!-- Request Upgrade Popup -->
+<div id="requestUpgradePopup" class="popup" style="display: none;">
+  <div class="popup-content">
+    <div class="popup-header" style="background-image: url('https://via.placeholder.com/600x200');">
+      <h2>Request Premium Upgrade</h2>
+    </div>
+    <div class="popup-body">
+      <p>You are about to request unlock premium feature @R99 once-off payment.</p>
+      <p>You will be able to upload your profile Logo.</p>
+      <p>You will be marked as verified (Registered business).</p>
+      <div class="input-group">
+        <label for="businessRegistrationNumber">Enter your business registration number</label>
+        <input type="text" id="businessRegistrationNumber" placeholder="e.g., 123456789">
+      </div>
+      <p class="note">If your business is registered, you will only get custom logo feature.</p>
+      <p>You will receive our feedback via your profile email with payment details.</p>
+      <button id="requestUpgradeButton" class="upgrade-button">Request upgrade</button>
+    </div>
+  </div>
+</div>
+
+  <!-- Profile Page -->
+  <div class="container">
+    <!-- Profile Header -->
+    <div class="profile-header">
+      <div style="position: relative; display: inline-block;">
+        <img id="profileImage" src="https://i.postimg.cc/5tvwbvRt/defaul-profile.png" alt="Profile Image" style="width: 100px; height: 100px; border-radius: 50%;">
+        <img id="verifiedIcon" src="/verified-icon.png" alt="Verified" style="position: absolute; bottom: 0; right: 0; width: 24px; height: 24px; display: none;">
+        <label for="profileImageUpload" style="position: absolute; bottom: 0; right: 0; cursor: pointer;">
+          <img src="/camera-icon.png" alt="Edit" style="width: 24px; height: 24px;">
+        </label>
+        <input hidden type="file" id="profileImageUpload" accept="image/*" style="display: none;" onchange="uploadProfileImage(event)">
+      </div>
+      
+      <div class="info">
+        <h1 id="profileName">
+          <span id="profileNameText"></span>
+          <img class="verifiedIcon" src="/verified-icon.png" alt="Verified" style="width: 20px; height: 20px; margin-left: 5px; vertical-align: middle; display: none;">
+        </h1>
+        <!-- Cloned Graphic Designer (Category) and Description -->
+        <p id="clonedProfileCategory" style="font-size: 16px; color: #555; margin: 5px 0;"></p>
+        <p id="clonedDescription" style="font-size: 14px; color: #777;"></p>
+      </div>
+    
+      <div class="profile-buttons">
+        <button id="profileButton" onclick="changeContent('profile')">Profile</button>
+        <button id="deleteButton" onclick="changeContent('delete')">Delete</button>
+        <button id="logoutButton">Logout</button>
+      </div>
+    </div>
+     
+    <div class="right-section" id="profileInfo">
+    
+      <h2>Profile Information</h2>
+         <!-- Add the "Edit All" button -->
+         <div class="edit-all-container">
+          <button id="editAllButton" class="edit-all-button">
+            Edit All <img src="/edit-icon.png" alt="Edit All" class="edit-all-icon">
+          </button>
+        </div>
+      <!-- Profile Category -->
+      <div class="profile-field">
+        <p>Category: <span id="profileCategoryDisplay"></span></p>
+        <img src="/edit-icon.png" alt="Edit" class="edit-icon" onclick="makeEditable('profileCategory')">
+        <input type="text" id="editProfileCategory" class="edit-input" style="display: none;">
+      </div>
+    
+      <!-- Description -->
+      <div class="profile-field">
+        <p>Description: <span id="descriptionDisplay"></span></p>
+        <img src="/edit-icon.png" alt="Edit" class="edit-icon" onclick="makeEditable('description')">
+        <input type="text" id="editDescription" class="edit-input" style="display: none;">
+      </div>
+    
+      <!-- Name -->
+      <div class="profile-field">
+        <p>Name: <span id="profileNameDisplay"></span></p>
+        <img src="/edit-icon.png" alt="Edit" class="edit-icon" onclick="makeEditable('profileName')">
+        <input type="text" id="editProfileName" class="edit-input" style="display: none;">
+      </div>
+    
+      <!-- Email -->
+      <div class="profile-field">
+        <p>Email: <span id="profileEmailDisplay"></span></p>
+        <img src="/edit-icon.png" alt="Edit" class="edit-icon" onclick="makeEditable('profileEmail')">
+        <input type="email" id="editProfileEmail" class="edit-input" style="display: none;">
+      </div>
+    
+      <!-- Phone -->
+      <div class="profile-field">
+        <p>Phone: <span id="phoneDisplay"></span></p>
+        <img src="/edit-icon.png" alt="Edit" class="edit-icon" onclick="makeEditable('phone')">
+        <input type="text" id="editPhone" class="edit-input" style="display: none;">
+      </div>
+    
+      <!-- City -->
+      <div class="profile-field">
+        <p>City: <span id="cityDisplay"></span></p>
+        <img src="/edit-icon.png" alt="Edit" class="edit-icon" onclick="makeEditable('city')">
+        <input type="text" id="editCity" class="edit-input" style="display: none;">
+      </div>
+    
+      <!-- Area -->
+      <div class="profile-field">
+        <p>Area: <span id="areaDisplay"></span></p>
+        <img src="/edit-icon.png" alt="Edit" class="edit-icon" onclick="makeEditable('area')">
+        <input type="text" id="editArea" class="edit-input" style="display: none;">
+      </div>
+    
+      <!-- Google Maps Embed -->
+      <div class="profile-field">
+        <p>Google Maps Embed: <span id="mapEmbedDisplay"></span></p>
+        <img src="/edit-icon.png" alt="Edit" class="edit-icon" onclick="makeEditable('mapEmbed')">
+        <input type="text" id="editMapEmbed" class="edit-input" style="display: none;">
+      </div>
+    
+      <!-- Map Link -->
+      <div class="profile-field">
+        <p>Map Link: <a href="#" id="mapLinkDisplay">View on Google Maps</a></p>
+        <img src="/edit-icon.png" alt="Edit" class="edit-icon" onclick="makeEditable('mapLink')">
+        <input type="url" id="editMapLink" class="edit-input" style="display: none;">
+      </div>
+
+      <!-- Update Profile Button -->
+      <button id="updateProfileButton" class="btn btn-primary" style="display: none;">Update Profile</button>
+
+      
+          <!-- YouTube Video Frame -->
+    <div hidden class="profile-field">
+      <p>How to Fill Your Profile Accurately:</p>
+      <div class="video-container">
+        <iframe
+          width="560"
+          height="315"
+          src="https://www.youtube.com/embed/YOUR_VIDEO_ID"
+          title="YouTube video player"
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen
+        ></iframe>
+      </div>
+    </div>
+    </div>
+
+      <!-- Delete Profile Section -->
+    <div class="right-section" id="deleteSection" style="display: none;">
+      <h2>Delete Profile</h2>
+      <p>Are you sure you want to delete your profile? This action cannot be undone.</p>
+      <button id="confirmDeleteButton" class="btn btn-danger">Delete Profile</button>
+    </div>
+  </div>
+  <!-- Firebase and Custom Scripts -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+    import { getFirestore, doc, getDoc, setDoc, deleteDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+    import { getAuth, onAuthStateChanged, signInWithPopup, GoogleAuthProvider, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+    import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-storage.js";
+  
+    const firebaseConfig = {
+      apiKey: "AIzaSyBmM_6a3ecHKEBqJWpNOdSsU7_BhPTBJwo",
+      authDomain: "search-business-b1a10.firebaseapp.com",
+      projectId: "search-business-b1a10",
+      storageBucket: "search-business-b1a10.appspot.com",
+      messagingSenderId: "663062601854",
+      appId: "1:663062601854:web:0afbd071a14f3cdedbb82f"
+    };
+  
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const storage = getStorage(app);
+    const provider = new GoogleAuthProvider();
+  
+    // Default profile image URL
+    const defaultProfileImage = "https://i.postimg.cc/5tvwbvRt/defaul-profile.png";
+  
+    // Initialize Cloudinary
+    if (typeof cloudinary !== 'undefined') {
+      const cloudinaryInstance = cloudinary.Cloudinary.new({ cloud_name: 'dvynxlujx' });
+      console.log("Cloudinary initialized successfully!");
+    } else {
+      console.error("Cloudinary script not loaded!");
+    }
+
+// Function to approve a profile
+async function approveProfile(profileId) {
+  console.log("Approving profile:", profileId); // Debugging
+  try {
+    const userRef = doc(db, "users", profileId);
+    await setDoc(userRef, { status: "approved" }, { merge: true });
+    alert("Profile approved!");
+    fetchPendingProfiles(); // Refresh the list
+  } catch (error) {
+    console.error("Error approving profile:", error);
+    alert("An error occurred while approving the profile.");
+  }
+}
+
+// Function to reject a profile
+async function rejectProfile(profileId) {
+  console.log("Rejecting profile:", profileId); // Debugging
+  try {
+    const userRef = doc(db, "users", profileId);
+    await setDoc(userRef, { status: "rejected" }, { merge: true });
+    alert("Profile rejected!");
+    fetchPendingProfiles(); // Refresh the list
+  } catch (error) {
+    console.error("Error rejecting profile:", error);
+    alert("An error occurred while rejecting the profile.");
+  }
+}
+  
+    // Function to upload profile image to Cloudinary
+    window.uploadProfileImage = async (event) => {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const userId = auth.currentUser.uid;
+  const userRef = doc(db, "users", userId);
+
+  // Check if the user is premium
+  const userDoc = await getDoc(userRef);
+  const userData = userDoc.data();
+
+  if (!userData.isPremium) {
+    // Show the premium upgrade popup
+    document.getElementById('premiumUpgradePopup').style.display = 'flex';
+    return;
+  }
+
+  // If the user is premium, proceed with the upload
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('upload_preset', 'Profile-images'); // Replace with your upload preset
+
+  try {
+    // Upload image to Cloudinary
+    const response = await fetch(`https://api.cloudinary.com/v1_1/dvynxlujx/image/upload`, {
+      method: 'POST',
+      body: formData
+    });
+
+    const data = await response.json();
+    const imageUrl = data.secure_url;
+
+    // Update Firestore with the new image URL
+    await setDoc(userRef, { profileImage: imageUrl }, { merge: true });
+
+    // Update the profile image in the UI
+    document.getElementById('profileImage').src = imageUrl;
+  } catch (error) {
+    console.error("Error uploading image to Cloudinary:", error);
+  }
+};
+
+// Event listener for the "Upgrade now" button
+document.getElementById('upgradeNowButton').addEventListener('click', () => {
+  // Hide the premium upgrade popup
+  document.getElementById('premiumUpgradePopup').style.display = 'none';
+  
+  // Show the request upgrade popup
+  document.getElementById('requestUpgradePopup').style.display = 'flex';
+});
+
+// Event listener for the "Request upgrade" button
+document.getElementById('requestUpgradeButton').addEventListener('click', async () => {
+  const userId = auth.currentUser.uid;
+  const userRef = doc(db, "users", userId);
+
+  const businessRegistrationNumber = document.getElementById('businessRegistrationNumber').value;
+
+  try {
+    // Update the user document with the upgrade request and timestamp
+    await setDoc(userRef, {
+      upgradeRequested: true,
+      businessRegistrationNumber: businessRegistrationNumber,
+      upgradeRequestedOn: new Date() // Add the current timestamp
+    }, { merge: true });
+
+    alert("Upgrade request submitted successfully!");
+    
+    // Hide the request upgrade popup
+    document.getElementById('requestUpgradePopup').style.display = 'none';
+  } catch (error) {
+    console.error("Error submitting upgrade request:", error);
+    alert("An error occurred while submitting the upgrade request.");
+  }
+});
+
+// Close popups when clicking outside
+window.addEventListener('click', (event) => {
+  const premiumUpgradePopup = document.getElementById('premiumUpgradePopup');
+  const requestUpgradePopup = document.getElementById('requestUpgradePopup');
+
+  if (event.target === premiumUpgradePopup) {
+    premiumUpgradePopup.style.display = 'none';
+  }
+  if (event.target === requestUpgradePopup) {
+    requestUpgradePopup.style.display = 'none';
+  }
+});
+  
+    // Function to fetch and display user data
+    const fetchUserData = async (userId) => {
+  const userRef = doc(db, "users", userId);
+  const userDoc = await getDoc(userRef);
+
+  if (userDoc.exists()) {
+    const data = userDoc.data();
+
+    // Set profile image (fallback to default if missing)
+    const profileImage = data.profileImage || defaultProfileImage;
+    document.getElementById('profileImage').src = profileImage;
+
+    // Show/hide verified icon (fallback to false if missing)
+    const verifiedIcon = document.querySelector('.verifiedIcon'); // Use querySelector for class
+    if (data.isPremium && data.isVerified) {
+      verifiedIcon.style.display = 'inline-block'; // Show verified icon
+    } else {
+      verifiedIcon.style.display = 'none'; // Hide verified icon
+    }
+
+    // Display other user data
+    document.getElementById("profileNameText").innerText = data.name || "Unknown User";
+    document.getElementById("profileNameDisplay").innerText = data.name || "Unknown User";
+    document.getElementById("profileCategoryDisplay").innerText = data.category || "No category provided";
+    document.getElementById("descriptionDisplay").innerText = truncateText(data.description, 150) || "No description provided";
+    document.getElementById("profileEmailDisplay").innerText = data.email || "No email provided";
+    document.getElementById("phoneDisplay").innerText = data.phone || "No phone number provided";
+    document.getElementById("cityDisplay").innerText = data.city || "No city provided";
+    document.getElementById("areaDisplay").innerText = data.area || "No area provided";
+    document.getElementById("mapEmbedDisplay").innerText = data.mapEmbed || "No embed link provided";
+    document.getElementById("mapLinkDisplay").href = data.mapLink || "#";
+
+    // Populate the cloned fields
+    document.getElementById("clonedProfileCategory").innerText = data.category || "No category provided";
+    document.getElementById("clonedDescription").innerText = truncateText(data.description, 150) || "No description provided";
+
+    // Clear any existing status message
+    const existingStatusMessage = document.getElementById("statusMessage");
+    if (existingStatusMessage) {
+      existingStatusMessage.remove();
+    }
+
+    // Show status message based on profile status
+    const statusMessage = document.createElement("p");
+    statusMessage.id = "statusMessage"; // Add an ID for easy removal
+    if (data.status === "pending") {
+      statusMessage.innerText = "Your profile is pending review.";
+      statusMessage.style.color = "#ff9800"; // Orange color
+    } else if (data.status === "rejected") {
+      statusMessage.innerText = "Your profile has been rejected, Please check your information and try again.";
+      statusMessage.style.color = "#f44336"; // Red color
+    }
+    document.getElementById("profileInfo").prepend(statusMessage);
+  }
+};
+    // Function to truncate text
+    function truncateText(text, maxLength) {
+      if (text && text.length > maxLength) {
+        return text.substring(0, maxLength) + "...";
+      }
+      return text;
+    }
+  
+    // Function to make a field editable
+    window.makeEditable = (fieldId) => {
+  const spanElement = document.getElementById(`${fieldId}Display`);
+  const inputElement = document.getElementById(`edit${fieldId.charAt(0).toUpperCase() + fieldId.slice(1)}`);
+
+  // Hide the span and show the input field
+  spanElement.style.display = 'none';
+  inputElement.style.display = 'inline-block';
+  inputElement.value = spanElement.innerText;
+  
+      // Show the "Update Profile" button
+      document.getElementById('updateProfileButton').style.display = 'block';
+    };
+  
+    document.getElementById('updateProfileButton').addEventListener('click', async () => {
+      const userId = auth.currentUser.uid;
+      const userRef = doc(db, "users", userId);
+  
+      const updatedData = {
+        name: document.getElementById('editProfileName').value || document.getElementById('profileNameDisplay').innerText,
+        category: document.getElementById('editProfileCategory').value || document.getElementById('profileCategoryDisplay').innerText,
+        description: document.getElementById('editDescription').value || document.getElementById('descriptionDisplay').innerText,
+        email: document.getElementById('editProfileEmail').value || document.getElementById('profileEmailDisplay').innerText,
+        phone: document.getElementById('editPhone').value || document.getElementById('phoneDisplay').innerText,
+        city: document.getElementById('editCity').value || document.getElementById('cityDisplay').innerText,
+        area: document.getElementById('editArea').value || document.getElementById('areaDisplay').innerText,
+        mapEmbed: document.getElementById('editMapEmbed').value || document.getElementById('mapEmbedDisplay').innerText,
+        mapLink: document.getElementById('editMapLink').value || document.getElementById('mapLinkDisplay').href
+      };
+  
+      try {
+        await setDoc(userRef, updatedData, { merge: true });
+        alert("Profile updated successfully!");
+  
+        // Refresh the profile data
+        fetchUserData(userId);
+  
+        // Reset the profile to its original state
+        resetProfileToOriginalState();
+      } catch (error) {
+        console.error("Error updating profile:", error);
+      }
+    });
+  
+    // Function to reset the profile to its original state
+    function resetProfileToOriginalState() {
+      // Hide all input fields and show the corresponding span elements
+      const editableFields = [
+        'profileName', 'profileCategory', 'description', 'profileEmail', 'phone', 'city', 'area', 'mapEmbed', 'mapLink'
+      ];
+  
+      editableFields.forEach(fieldId => {
+        const spanElement = document.getElementById(`${fieldId}Display`);
+        const inputElement = document.getElementById(`edit${fieldId.charAt(0).toUpperCase() + fieldId.slice(1)}`);
+  
+        // Hide the input field and show the span
+        inputElement.style.display = 'none';
+        spanElement.style.display = 'inline';
+      });
+  
+      // Hide the "Update Profile" button
+      document.getElementById('updateProfileButton').style.display = 'none';
+    }
+  
+    // Check login status on page load
+    const checkLoginStatus = () => {
+      const loginModal = document.getElementById("loginModal");
+  
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          console.log("User is logged in:", user);
+          loginModal.classList.remove('show');
+          fetchUserData(user.uid);
+        } else {
+          console.log("No user is logged in.");
+          loginModal.classList.add('show');
+        }
+      }, (error) => {
+        console.error("Auth state change error:", error);
+      });
+    };
+  
+    // Initialize login status check
+    checkLoginStatus();
+  
+    // Google Sign-In logic
+// Google Sign-In logic
+document.getElementById('signInButton').addEventListener('click', () => {
+  signInWithPopup(auth, provider)
+    .then(async (result) => {
+      console.log("User logged in:", result.user);
+      const userId = result.user.uid;
+      const userRef = doc(db, "users", userId);
+
+      // Check if the user document already exists
+      const userDoc = await getDoc(userRef);
+      if (!userDoc.exists()) {
+        // Create a new user document with default values
+        await setDoc(userRef, {
+          name: result.user.displayName || "Unknown User",
+          email: result.user.email || "No email provided",
+          isPremium: false, // Default to free user
+          isVerified: false, // Default to unverified
+          profileImage: defaultProfileImage, // Default profile image
+          status: "pending", // Set status to pending
+          role: "user", // Default role is user
+        });
+      }
+
+      // Refresh the UI
+      checkLoginStatus();
+    })
+    .catch((error) => {
+      console.error("Error during login:", error);
+      alert("Error during login: " + error.message);
+    });
+});
+    // Logout functionality
+    document.getElementById('logoutButton').addEventListener('click', () => {
+      signOut(auth)
+        .then(() => {
+          console.log("User logged out.");
+          checkLoginStatus();
+        })
+        .catch((error) => {
+          console.error("Error during logout:", error.message);
+        });
+    });
+  
+    // Delete Profile Functionality
+    const confirmDeleteButton = document.getElementById('confirmDeleteButton');
+    if (confirmDeleteButton) {
+      confirmDeleteButton.addEventListener('click', async () => {
+        console.log("Delete button clicked!"); // Debugging line
+  
+        const user = auth.currentUser;
+        if (!user) {
+          console.error("No user is logged in.");
+          alert("You must be logged in to delete your profile.");
+          return;
+        }
+  
+        const userId = user.uid;
+        console.log("User ID:", userId); // Debugging line
+  
+        const userRef = doc(db, "users", userId);
+  
+        // Confirm deletion
+        const confirmDelete = confirm("Are you sure you want to delete your profile? This action cannot be undone.");
+        if (!confirmDelete) return; // Exit if the user cancels
+  
+        try {
+          // Delete the profile document from Firestore
+          await deleteDoc(userRef);
+          console.log("Profile deleted successfully!");
+  
+          // Log the user out
+          await signOut(auth);
+          console.log("User logged out.");
+  
+          // Redirect to the login page or refresh the page
+          window.location.reload(); // Or redirect to a login page
+        } catch (error) {
+          console.error("Error deleting profile:", error);
+          alert("An error occurred while deleting your profile. Please try again.");
+        }
+      });
+    } else {
+      console.error("Delete button not found in the DOM.");
+    }
+  
+    // Function to change the content when buttons are clicked
+    window.changeContent = (action) => {
+      const profileInfo = document.getElementById('profileInfo');
+      const deleteSection = document.getElementById('deleteSection');
+      const cameraIcon = document.querySelector('.camera-icon');
+  
+      if (action === 'profile') {
+        profileInfo.style.display = 'block';
+        deleteSection.style.display = 'none';
+      } else if (action === 'delete') {
+        profileInfo.style.display = 'none';
+        deleteSection.style.display = 'block';
+      }
+    };
+  
+    // Function to preview the uploaded image
+    window.previewImage = (event) => {
+      const reader = new FileReader();
+      reader.onload = function () {
+        const output = document.getElementById('profileImage');
+        output.src = reader.result;
+      };
+      reader.readAsDataURL(event.target.files[0]);
+    };
+
+    // Example function to check text for harmful content
+async function checkTextForHarmfulContent(text) {
+  const response = await fetch('https://your-text-moderation-api.com/check', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ text: text }),
+  });
+  const result = await response.json();
+  return result.isHarmful; // Assuming the API returns a boolean indicating if the text is harmful
+}
+
+// Example function to check image for harmful content
+async function checkImageForHarmfulContent(imageFile) {
+  const formData = new FormData();
+  formData.append('file', imageFile);
+
+  const response = await fetch('https://your-image-moderation-api.com/check', {
+    method: 'POST',
+    body: formData,
+  });
+  const result = await response.json();
+  return result.isHarmful; // Assuming the API returns a boolean indicating if the image is harmful
+}
+
+
+
+
+// Function to check if the user is an admin
+async function checkIfAdmin(userId) {
+  const userRef = doc(db, "users", userId);
+  const userDoc = await getDoc(userRef);
+
+  if (userDoc.exists()) {
+    const userData = userDoc.data();
+    return userData.role === "admin"; // Return true if the user is an admin
+  }
+  return false; // Default to false
+}
+// Update the login logic
+onAuthStateChanged(auth, async (user) => {
+  if (user) {
+    console.log("User is logged in:", user);
+    loginModal.classList.remove('show');
+    fetchUserData(user.uid);
+
+    // Check if the user is an admin
+    const isAdmin = await checkIfAdmin(user.uid);
+    if (isAdmin) {
+      document.getElementById("adminPanelButton").style.display = "block"; // Show admin panel button
+      document.getElementById("adminNotification").style.display = "block"; // Show admin notification
+      console.log("You are logged in as an admin.");
+    } else {
+      console.log("You are logged in as a regular user.");
+    }
+  } else {
+    console.log("No user is logged in.");
+    loginModal.classList.add('show');
+  }
+});
+
+// Function to fetch and display pending profiles
+async function fetchPendingProfiles() {
+  try {
+    console.log("Fetching pending profiles..."); // Debugging
+    const profilesRef = collection(db, "users");
+    const q = query(profilesRef, where("status", "==", "pending"));
+    const querySnapshot = await getDocs(q);
+
+    console.log("Pending profiles fetched:", querySnapshot.docs.length); // Debugging
+
+    const pendingProfilesList = document.getElementById("pendingProfilesList");
+    pendingProfilesList.innerHTML = ""; // Clear the list
+
+    querySnapshot.forEach((doc) => {
+      const profile = doc.data();
+      const profileId = doc.id;
+
+      console.log("Pending profile:", profile); // Debugging
+
+      const profileDiv = document.createElement("div");
+      profileDiv.className = "pending-profile";
+      profileDiv.innerHTML = `
+        <p><strong>Name:</strong> ${profile.name}</p>
+        <p><strong>Category:</strong> ${profile.category}</p>
+        <p><strong>Description:</strong> ${profile.description}</p>
+        <button class="approve" data-profile-id="${profileId}">Approve</button>
+        <button class="reject" data-profile-id="${profileId}">Reject</button>
+      `;
+
+      pendingProfilesList.appendChild(profileDiv);
+    });
+
+    // Add event listeners for approve and reject buttons
+    pendingProfilesList.addEventListener("click", (event) => {
+      if (event.target.classList.contains("approve")) {
+        const profileId = event.target.getAttribute("data-profile-id");
+        approveProfile(profileId);
+      } else if (event.target.classList.contains("reject")) {
+        const profileId = event.target.getAttribute("data-profile-id");
+        rejectProfile(profileId);
+      }
+    });
+  } catch (error) {
+    console.error("Error fetching pending profiles:", error); // Debugging
+  }
+}
+// Function to toggle admin panel
+function toggleAdminPanel() {
+  console.log("toggleAdminPanel called"); // Debugging
+  const adminPanel = document.getElementById("adminPanel");
+  if (adminPanel.style.display === "none") {
+    adminPanel.style.display = "block";
+    fetchPendingProfiles(); // Fetch pending profiles when the panel is opened
+  } else {
+    adminPanel.style.display = "none";
+  }
+}
+
+// Add event listener to the admin panel button
+document.getElementById("adminPanelButton").addEventListener("click", toggleAdminPanel);
+
+
+
+// Function to fetch and display upgrade requests
+async function fetchUpgradeRequests() {
+  try {
+    console.log("Fetching upgrade requests..."); // Debugging
+    const upgradeRequestsList = document.getElementById("upgradeRequestsList");
+    upgradeRequestsList.innerHTML = ""; // Clear the list
+
+    const q = query(collection(db, "users"), where("upgradeRequested", "==", true));
+    const querySnapshot = await getDocs(q);
+
+    console.log("Upgrade requests fetched:", querySnapshot.docs.length); // Debugging
+
+    querySnapshot.forEach((doc) => {
+      const user = doc.data();
+      const userId = doc.id;
+
+      console.log("Upgrade request:", user); // Debugging
+
+      const requestDiv = document.createElement("div");
+      requestDiv.className = "upgrade-request";
+      requestDiv.innerHTML = `
+        <p><strong>Name:</strong> ${user.name}</p>
+        <p><strong>Email:</strong> ${user.email}</p>
+        <p><strong>Business Registration Number:</strong> ${user.businessRegistrationNumber}</p>
+        <p><strong>Requested On:</strong> ${user.upgradeRequestedOn ? new Date(user.upgradeRequestedOn.toDate()).toLocaleString() : "N/A"}</p>
+        <div class="actions">
+          <button class="approve" data-user-id="${userId}">Approve</button>
+          <button class="reject" data-user-id="${userId}">Reject</button>
+        </div>
+      `;
+
+      upgradeRequestsList.appendChild(requestDiv);
+    });
+
+    // Add event listeners for approve and reject buttons
+    upgradeRequestsList.addEventListener("click", (event) => {
+      if (event.target.classList.contains("approve")) {
+        const userId = event.target.getAttribute("data-user-id");
+        handleUpgradeRequest(userId, true);
+      } else if (event.target.classList.contains("reject")) {
+        const userId = event.target.getAttribute("data-user-id");
+        handleUpgradeRequest(userId, false);
+      }
+    });
+  } catch (error) {
+    console.error("Error fetching upgrade requests:", error); // Debugging
+  }
+}
+
+// Function to handle approve/reject actions for upgrade requests
+async function handleUpgradeRequest(userId, isApproved) {
+  const userRef = doc(db, "users", userId);
+
+  try {
+    await setDoc(userRef, {
+      isPremium: isApproved,
+      upgradeRequested: false, // Reset the request status
+      upgradeRequestedOn: null // Clear the request timestamp
+    }, { merge: true });
+
+    alert(`Upgrade request ${isApproved ? 'approved' : 'rejected'} successfully!`);
+    fetchUpgradeRequests(); // Refresh the list
+  } catch (error) {
+    console.error("Error handling upgrade request:", error);
+    alert("An error occurred while handling the upgrade request.");
+  }
+}
+
+// Toggle between pending profiles and upgrade requests
+document.getElementById("togglePendingProfiles").addEventListener("click", () => {
+  document.getElementById("pendingProfilesList").style.display = "block";
+  document.getElementById("upgradeRequestsList").style.display = "none";
+  fetchPendingProfiles(); // Fetch pending profiles when the section is shown
+});
+
+document.getElementById("toggleUpgradeRequests").addEventListener("click", () => {
+  document.getElementById("pendingProfilesList").style.display = "none";
+  document.getElementById("upgradeRequestsList").style.display = "block";
+  fetchUpgradeRequests(); // Fetch upgrade requests when the section is shown
+});
+
+document.getElementById('editAllButton').addEventListener('click', () => {
+  const editableFields = [
+    'profileName', 'profileCategory', 'description', 'profileEmail', 'phone', 'city', 'area', 'mapEmbed', 'mapLink'
+  ];
+
+  editableFields.forEach(fieldId => {
+    makeEditable(fieldId);
+  });
+
+  // Show the "Update Profile" button
+  document.getElementById('updateProfileButton').style.display = 'block';
+});
+  </script>
+</body>
+</html>

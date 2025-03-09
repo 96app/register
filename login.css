@@ -1,0 +1,85 @@
+/* Ensure body doesn't scroll when modal is visible */
+body.modal-open {
+    overflow: hidden; /* Prevent scrolling on body */
+}
+
+/* Modal styles */
+#loginModal {
+    position: fixed;  /* Fixes the modal in place */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgb(255, 255, 255); /* Semi-transparent dark background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    visibility: hidden; /* Hidden by default */
+    opacity: 0; /* Fully transparent */
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    z-index: 9999;  /* Make sure the modal appears on top of other content */
+}
+
+#loginModal {
+    visibility: hidden;  /* Hidden initially */
+    opacity: 0;  /* Fully transparent */
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+/* Modal visible */
+#loginModal.show {
+    visibility: visible;
+    opacity: 1;  /* Fully visible */
+}
+
+
+/* Show the modal */
+#loginModal.show {
+    visibility: visible;
+    opacity: 1; /* Fully visible */
+}
+
+/* Modal content styles */
+.modal-content {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    width: 100%;
+    max-width: 350px; /* Max width of the modal */
+    box-sizing: border-box; /* Ensure padding doesn't mess with width */
+}
+
+/* Logo image styling */
+.logo img {
+    max-width: 250px;
+    margin-bottom: 20px;
+}
+
+/* Google login button styles */
+.google-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #4285F4;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    font-size: 16px;
+    border-radius: 6px;
+    width: 100%;
+    max-width: 300px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+/* Button hover effect */
+.google-btn:hover {
+    background-color: #357ae8;
+}
+
+/* Google button icon */
+.google-btn img {
+    width: 18px;
+    margin-right: 12px;
+}

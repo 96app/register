@@ -1,0 +1,630 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f7f6;
+  }
+  .container {
+    max-width: 1200px;
+    margin: 30px auto;
+  }
+  .profile-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+  .profile-header img {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin-right: 20px;
+    position: relative; /* Important for positioning the camera icon */
+  }
+  /* Camera Icon styling */
+  .camera-icon {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    padding: 5px;
+    border-radius: 50%;
+    cursor: pointer;
+    color: white;
+    font-size: 24px;
+    display: none; /* Hidden by default */
+  }
+
+/* Profile Field Styling */
+.profile-field {
+  position: relative;
+  margin-bottom: 15px;
+  padding: 10px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  overflow: hidden; /* Prevent text overflow */
+}
+
+.profile-field p {
+  margin: 0;
+  font-size: 14px;
+  color: #333;
+  white-space: nowrap; /* Prevent text wrapping */
+  overflow: hidden; /* Hide overflow */
+  text-overflow: ellipsis; /* Show "..." for overflow */
+}
+
+/* Edit Icon Styling */
+.edit-icon {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.3s;
+}
+
+.edit-icon:hover {
+  opacity: 1;
+}
+
+/* Edit Input Styling */
+.edit-input {
+  display: none;
+  width: calc(100% - 20px); /* Full width minus padding */
+  padding: 5px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+}
+  .edit-icon {
+    margin-left: 10px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  
+  .edit-input {
+    display: none;
+    width: 100%;
+    padding: 5px;
+    margin-left: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  /* Show camera icon when hovering over profile image */
+  .profile-header img:hover .camera-icon {
+    display: block; /* Display when hover */
+  }
+  .profile-header .info {
+    flex: 1;
+  }
+  .profile-header .info h1 {
+    margin: 0;
+    font-size: 28px;
+    color: #333;
+  }
+  .info h1 {
+    margin: 0;
+    font-size: 28px;
+    color: #333;
+  }
+  
+  .info p {
+    margin: 5px 0;
+    font-size: 16px;
+    color: #555;
+  }
+  
+  .info #clonedDescription {
+    font-size: 14px;
+    color: #777;
+  }
+
+  .verifiedIcon {
+    position: relative;
+    top: -2px; /* Adjust as needed */
+    z-index: 1; /* Ensure it appears above other elements */
+  }
+  
+  
+  .profile-buttons {
+    display: flex;
+    gap: 20px;
+  }
+  .profile-buttons button {
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  .profile-buttons button:hover {
+    background-color: #1e183f;
+    color: white;
+  }
+  .right-section {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+  }
+  .right-section h2 {
+    margin-bottom: 20px;
+  }
+  /* Media Queries for responsiveness */
+@media (max-width: 768px) {
+.profile-header {
+  flex-direction: column;
+  align-items: center; /* Centering content horizontally in tablet */
+  text-align: center; /* Ensure text is centered */
+}
+.profile-header img {
+  margin-bottom: 10px;
+}
+.profile-header .info h1 {
+  font-size: 26px; /* Adjust size for tablet */
+  margin-bottom: 10px;
+}
+.profile-buttons {
+  flex-direction: column;
+  gap: 10px; /* Vertical spacing between buttons */
+  justify-content: center; /* Center align buttons horizontally */
+  width: 100%;
+}
+}
+
+@media (max-width: 576px) {
+.profile-header .info h1 {
+  font-size: 22px; /* Adjust size for mobile */
+  margin-bottom: 8px;
+}
+.profile-header img {
+  width: 120px;
+  height: 120px;
+}
+.profile-buttons button {
+  font-size: 14px;
+  padding: 8px 16px;
+}
+}
+
+
+
+/* Admin Panel Styles */
+.admin-panel {
+  display: none; /* Hidden by default */
+  margin: 20px;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.admin-panel h2 {
+  margin-top: 0;
+  font-size: 24px;
+  color: #333;
+}
+
+.pending-profiles-list {
+  margin-top: 20px;
+}
+
+.pending-profile {
+  margin-bottom: 20px;
+  padding: 15px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.pending-profile p {
+  margin: 5px 0;
+  font-size: 16px;
+  color: #555;
+}
+
+.pending-profile button {
+  margin-right: 10px;
+  padding: 8px 16px;
+  font-size: 14px;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.pending-profile button.approve {
+  background-color: #4CAF50; /* Green */
+}
+
+.pending-profile button.approve:hover {
+  background-color: #45a049;
+}
+
+.pending-profile button.reject {
+  background-color: #f44336; /* Red */
+}
+
+.pending-profile button.reject:hover {
+  background-color: #d32f2f;
+}
+
+#adminPanelButton {
+  display: none; /* Hidden by default */
+  margin: 20px;
+  padding: 10px 20px;
+  font-size: 16px;
+  color: #fff;
+  background-color: #007bff; /* Blue */
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+#adminPanelButton:hover {
+  background-color: #0056b3;
+}
+
+#adminNotification {
+  margin: 20px;
+  padding: 10px;
+  background-color: #4CAF50; /* Green */
+  color: white;
+  border-radius: 5px;
+  text-align: center;
+}
+
+#adminNotification p {
+  padding-top: 20px;
+}
+
+
+
+
+/* Popup Container */
+.popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+/* Popup Content */
+.popup-content {
+  background-color: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Popup Header */
+.popup-header {
+  background-size: cover;
+  background-position: center;
+  padding: 30px 20px;
+  text-align: center;
+  color: #fff;
+  position: relative;
+}
+
+.popup-header h2 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Popup Body */
+.popup-body {
+  padding: 20px;
+  text-align: center;
+}
+
+.popup-body p {
+  font-size: 14px;
+  color: #555;
+  margin: 10px 0;
+}
+
+.popup-body .price {
+  font-size: 32px;
+  font-weight: 700;
+  color: #333;
+  margin: 20px 0;
+}
+
+.popup-body .price span {
+  font-size: 16px;
+  font-weight: 400;
+  color: #777;
+}
+
+.popup-body .features {
+  list-style: none;
+  padding: 0;
+  margin: 20px 0;
+}
+
+.popup-body .features li {
+  font-size: 14px;
+  color: #555;
+  margin: 10px 0;
+}
+
+/* Upgrade Button */
+.upgrade-button {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.upgrade-button:hover {
+  background-color: #0056b3;
+}
+
+
+/* Popup Container (Same as before) */
+.popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+/* Popup Content (Same as before) */
+.popup-content {
+  background-color: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Popup Header (Same as before) */
+.popup-header {
+  background-size: cover;
+  background-position: center;
+  padding: 30px 20px;
+  text-align: center;
+  color: #fff;
+  position: relative;
+}
+
+.popup-header h2 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Popup Body */
+.popup-body {
+  padding: 20px;
+  text-align: left;
+}
+
+.popup-body p {
+  font-size: 14px;
+  color: #555;
+  margin: 10px 0;
+  line-height: 1.5;
+}
+
+.popup-body .note {
+  font-size: 12px;
+  color: #888;
+  margin-top: 5px;
+}
+
+/* Input Group */
+.input-group {
+  margin: 20px 0;
+}
+
+.input-group label {
+  font-size: 14px;
+  color: #333;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.input-group input:focus {
+  border-color: #007bff;
+}
+
+/* Upgrade Button (Same as before) */
+.upgrade-button {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  width: 100%;
+  margin-top: 20px;
+}
+
+.upgrade-button:hover {
+  background-color: #0056b3;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+.upgrade-requests-list {
+  margin-top: 20px;
+}
+
+.upgrade-requests-list .upgrade-request {
+  border: 1px solid #ddd;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
+
+.upgrade-requests-list .upgrade-request p {
+  margin: 5px 0;
+}
+
+.upgrade-requests-list .actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.upgrade-requests-list .actions button {
+  padding: 5px 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.upgrade-requests-list .actions .approve {
+  background-color: #28a745;
+  color: #fff;
+}
+
+.upgrade-requests-list .actions .reject {
+  background-color: #dc3545;
+  color: #fff;
+}
+
+
+
+.video-container {
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%; /* 16:9 aspect ratio */
+  margin-top: 10px;
+}
+
+.video-container iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+
+/* Admin Panel Buttons */
+#togglePendingProfiles,
+#toggleUpgradeRequests {
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+  background-color: #007bff; /* Blue background */
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  margin-right: 10px; /* Space between buttons */
+  margin: 5px;
+}
+
+#togglePendingProfiles:hover,
+#toggleUpgradeRequests:hover {
+  background-color: #0056b3; /* Darker blue on hover */
+  transform: translateY(-2px); /* Slight lift effect */
+}
+
+#togglePendingProfiles:active,
+#toggleUpgradeRequests:active {
+  background-color: #004080; /* Even darker blue on click */
+  transform: translateY(0); /* Reset lift effect */
+}
+
+/* Optional: Add a different color for the second button */
+#toggleUpgradeRequests {
+  background-color: #28a745; /* Green background */
+}
+
+#toggleUpgradeRequests:hover {
+  background-color: #218838; /* Darker green on hover */
+}
+
+#toggleUpgradeRequests:active {
+  background-color: #1e7e34; /* Even darker green on click */
+}
+
+
+
+
+.edit-all-container {
+  text-align: right;
+  margin-bottom: 10px;
+  margin-right: -5px;
+}
+
+.edit-all-button {
+  background-color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  color: blue;
+}
+
+
+.edit-all-icon {
+  width: 16px;
+  height: 16px;
+  margin-left: 8px;
+}
